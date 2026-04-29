@@ -1,107 +1,189 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>FarmLink</title>
+  <title>🌱 FarmLink - Fresh Direct</title>
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #4CAF50, #8BC34A, #C0E6A5);
+      min-height: 100vh;
+      padding: 20px;
+    }
     #dashboard {
       display: flex;
       justify-content: center;
-      gap: 30px;
-      margin-top: 50px;
+      gap: 40px;
+      margin: 50px auto;
+      max-width: 600px;
     }
     .card {
-      width: 150px;
-      height: 150px;
-      border: 2px solid black;
+      width: 180px;
+      height: 180px;
+      border: 3px solid #2E7D32;
+      background: linear-gradient(145deg, #fff, #E8F5E8);
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 24px;
+      font-weight: bold;
       cursor: pointer;
-      border-radius: 10px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="30" r="8" fill="%234CAF50"/><circle cx="80" cy="40" r="6" fill="%238BC34A"/><path d="M10 80 Q50 60 90 80" stroke="%232E7D32" stroke-width="3" fill="none"/></svg>') no-repeat center/cover;
+      opacity: 0.1;
     }
     .card:hover {
-      background-color: lightgreen;
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      background: linear-gradient(145deg, #F1F8E9, #DCEDC8);
     }
-    .hidden {
-      display: none;
+    .card.farmer { border-color: #388E3C; }
+    .card.consumer { border-color: #689F38; }
+    .hidden { display: none; }
+    .login-section {
+      max-width: 350px;
+      margin: 50px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
     }
     input {
-      margin: 10px 0;
-      padding: 8px;
-      width: 200px;
+      width: 100%;
+      padding: 12px;
+      margin: 15px 0;
+      border: 2px solid #AED581;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: border 0.3s;
+    }
+    input:focus {
+      outline: none;
+      border-color: #4CAF50;
+      box-shadow: 0 0 10px rgba(76,175,80,0.3);
+    }
+    input:invalid {
+      border-color: #FF5722;
     }
     button {
-      padding: 10px 20px;
-      margin: 10px 5px;
-      cursor: pointer;
-    }
-    .login-section {
-      max-width: 300px;
-      margin: 50px auto;
-      padding: 20px;
-      border: 1px solid #ccc;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(145deg, #4CAF50, #45a049);
+      color: white;
+      border: none;
       border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin: 10px 0;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
     #welcome {
       text-align: center;
-      margin: 10px;
+      color: #2E7D32;
+      font-size: 18px;
+      margin: 20px 0;
+      padding: 15px;
+      background: #E8F5E8;
+      border-radius: 10px;
+    }
+    .product {
+      background: white;
+      border: 2px solid #AED581;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 15px 0;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+    .product:hover {
+      transform: translateY(-5px);
+    }
+    h2, h3 { color: #2E7D32; }
+    @media (max-width: 600px) {
+      #dashboard { flex-direction: column; align-items: center; gap: 20px; }
+      .card { width: 250px; height: 120px; }
     }
   </style>
 </head>
 <body>
   <!-- Dashboard Blocks -->
   <div id="dashboard">
-    <div class="card" onclick="showFarmerLogin()">
-      👨‍🌾 Farmer
+    <div class="card farmer" onclick="showFarmerLogin()">
+      👨‍🌾 Farmer<br><small>Fresh Produce</small>
     </div>
-    <div class="card" onclick="showConsumerLogin()">
-      👤 Consumer
+    <div class="card consumer" onclick="showConsumerLogin()">
+      👤 Consumer<br><small>Buy Direct</small>
     </div>
   </div>
 
   <!-- Farmer Login -->
   <div id="farmerLogin" class="hidden login-section">
     <button onclick="goBackFromLogin()">⬅ Back</button>
-    <h2>👨‍🌾 Farmer Login</h2>
-    <input id="farmerName" placeholder="Farmer Name"><br>
-    <input id="farmerPhone" placeholder="Phone Number"><br>
-    <button onclick="proceedFarmer()">Proceed</button>
+    <h2>🌾 Farmer Login</h2>
+    <input id="farmerName" placeholder="Farmer Name" required>
+    <input id="farmerPhone" type="tel" pattern="[0-9]{10}" placeholder="Mobile Number (10 digits)" title="10 digits only" maxlength="10" required>
+    <button onclick="proceedFarmer()">🌱 Proceed to Farm</button>
     <div id="farmerWelcome" class="hidden"></div>
   </div>
 
   <!-- Consumer Login -->
   <div id="consumerLogin" class="hidden login-section">
     <button onclick="goBackFromLogin()">⬅ Back</button>
-    <h2>👤 Consumer Login</h2>
-    <input id="consumerName" placeholder="Consumer Name"><br>
-    <input id="consumerPhone" placeholder="Phone Number"><br>
-    <input id="consumerLocation" placeholder="Location (or click detect)"><br>
-    <button onclick="detectLocation()">Detect Location</button>
-    <button onclick="proceedConsumer()">Proceed</button>
+    <h2>🛒 Consumer Login</h2>
+    <input id="consumerName" placeholder="Your Name" required>
+    <input id="consumerPhone" type="tel" pattern="[0-9]{10}" placeholder="Mobile Number (10 digits)" title="10 digits only" maxlength="10" required>
+    <input id="consumerLocation" placeholder="Location (lat,long or city)" required>
+    <button type="button" onclick="detectLocation()">📍 Detect GPS</button>
+    <button onclick="proceedConsumer()">🚀 Proceed to Market</button>
     <div id="consumerWelcome" class="hidden"></div>
   </div>
 
   <!-- Farmer Dashboard -->
-  <div id="farmer" class="hidden">
-    <button onclick="goBack()">⬅ Back</button>
-    <h2>👨‍🌾 Add Product</h2>
-    <input id="name" placeholder="Product Name"><br>
-    <input id="price" placeholder="Price per kg"><br>
-    <input id="quantity" placeholder="Available Quantity"><br>
-    <input id="minQty" placeholder="Minimum Bulk Quantity"><br>
-    <button onclick="addProduct()">Add Product</button>
+  <div id="farmer" class="hidden login-section" style="max-width: 500px;">
+    <button onclick="goBack()">⬅ Back to Home</button>
+    <h2>🌱 Add Fresh Product</h2>
+    <div id="farmerWelcomeDash" style="margin-bottom: 20px;"></div>
+    <input id="name" placeholder="Product Name (e.g. Apples)" required>
+    <input id="price" type="number" step="0.01" placeholder="Price ₹/kg" required>
+    <input id="quantity" type="number" placeholder="Available kg" required>
+    <input id="minQty" type="number" placeholder="Min Bulk kg" required>
+    <button onclick="addProduct()">+ Add Product</button>
   </div>
 
   <!-- Consumer Dashboard -->
-  <div id="consumer" class="hidden">
-    <button onclick="goBack()">⬅ Back</button>
-    <h2>🛒 Products</h2>
+  <div id="consumer" class="hidden" style="max-width: 600px; margin: 20px auto;">
+    <button onclick="goBack()">⬅ Back to Home</button>
+    <h2>🛒 Fresh Products Market</h2>
+    <div id="consumerWelcomeDash" style="margin-bottom: 20px;"></div>
     <div id="productList"></div>
   </div>
 
   <script>
     let currentUser = null;
+
+    // Load user if already logged (optional persistence)
+    window.onload = function() {
+      const savedFarmer = localStorage.getItem('farmerProfile');
+      const savedConsumer = localStorage.getItem('consumerProfile');
+      if (savedFarmer) {
+        // Could auto-login, but for now manual
+      }
+    };
 
     function showFarmerLogin() {
       document.getElementById("dashboard").classList.add("hidden");
@@ -120,52 +202,54 @@
     }
 
     function proceedFarmer() {
-      const name = document.getElementById('farmerName').value;
-      const phone = document.getElementById('farmerPhone').value;
-      if (!name || !phone) {
-        alert('Please enter name and phone');
+      const name = document.getElementById('farmerName').value.trim();
+      const phone = document.getElementById('farmerPhone').value.trim();
+      if (!name || !/^\d{10}$/.test(phone)) {
+        alert('Name required. Phone must be exactly 10 digits.');
         return;
       }
       localStorage.setItem('farmerProfile', JSON.stringify({name, phone}));
       currentUser = {type: 'farmer', name, phone};
-      document.getElementById('farmerWelcome').innerHTML = `Welcome, ${name}!`;
+      document.getElementById('farmerWelcome').innerHTML = `🌾 Welcome back, ${name}!`;
       document.getElementById('farmerWelcome').classList.remove('hidden');
+      document.getElementById('farmerWelcomeDash').innerHTML = `👨‍🌾 ${name} - Verified Farmer`;
       setTimeout(() => {
         document.getElementById("farmerLogin").classList.add("hidden");
         document.getElementById("farmer").classList.remove("hidden");
-      }, 1000);
+      }, 1200);
     }
 
     function detectLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
-          const location = `${position.coords.latitude.toFixed(2)}, ${position.coords.longitude.toFixed(2)}`;
-          document.getElementById('consumerLocation').value = location;
-        }, () => {
-          alert('Location access denied or unavailable');
+          const loc = `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
+          document.getElementById('consumerLocation').value = loc;
+        }, (err) => {
+          alert('GPS failed: Use manual location (city or lat,long)');
         });
       } else {
-        alert('Geolocation not supported');
+        alert('GPS not supported');
       }
     }
 
     function proceedConsumer() {
-      const name = document.getElementById('consumerName').value;
-      const phone = document.getElementById('consumerPhone').value;
-      const location = document.getElementById('consumerLocation').value;
-      if (!name || !phone || !location) {
-        alert('Please enter all fields');
+      const name = document.getElementById('consumerName').value.trim();
+      const phone = document.getElementById('consumerPhone').value.trim();
+      const location = document.getElementById('consumerLocation').value.trim();
+      if (!name || !/^\d{10}$/.test(phone) || !location) {
+        alert('All fields required. Phone must be 10 digits.');
         return;
       }
       localStorage.setItem('consumerProfile', JSON.stringify({name, phone, location}));
       currentUser = {type: 'consumer', name, phone, location};
-      document.getElementById('consumerWelcome').innerHTML = `Welcome, ${name}! Location: ${location}`;
+      document.getElementById('consumerWelcome').innerHTML = `🛒 Hi ${name}! 📍 ${location}`;
       document.getElementById('consumerWelcome').classList.remove('hidden');
+      document.getElementById('consumerWelcomeDash').innerHTML = `👤 ${name} @ ${location}`;
       setTimeout(() => {
         document.getElementById("consumerLogin").classList.add("hidden");
         document.getElementById("consumer").classList.remove("hidden");
         displayProducts();
-      }, 1000);
+      }, 1200);
     }
 
     function goBack() {
@@ -175,13 +259,13 @@
     }
 
     function addProduct() {
-      const name = document.getElementById('name').value;
+      const name = document.getElementById('name').value.trim();
       const price = parseFloat(document.getElementById('price').value);
       const quantity = parseInt(document.getElementById('quantity').value);
       const minQty = parseInt(document.getElementById('minQty').value);
       
-      if (!name || isNaN(price) || isNaN(quantity) || isNaN(minQty)) {
-        alert('Please fill all fields with valid numbers for price, quantity, minQty');
+      if (!name || isNaN(price) || isNaN(quantity) || isNaN(minQty) || quantity <= 0 || minQty <= 0 || minQty > quantity) {
+        alert('Valid product details required. MinQty <= Quantity.');
         return;
       }
       
@@ -194,7 +278,7 @@
       document.getElementById('quantity').value = '';
       document.getElementById('minQty').value = '';
       
-      alert('Product added successfully!');
+      alert(`✅ ${name} added to market!`);
     }
 
     function displayProducts() {
@@ -203,22 +287,34 @@
       productList.innerHTML = '';
       
       if (products.length === 0) {
-        productList.innerHTML = '<p>No products available yet.</p>';
+        productList.innerHTML = '<div class="product" style="text-align:center;color:#666;"><p>🥬 No fresh produce yet.<br>Farmers, add some!</p></div>';
         return;
       }
       
-      products.forEach(product => {
+      products.forEach((product, index) => {
         const div = document.createElement('div');
         div.className = 'product';
-        div.style.cssText = 'border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 5px;';
         div.innerHTML = `
-          <h3>${product.name}</h3>
-          <p>Price: ₹${product.price}/kg</p>
-          <p>Available: ${product.quantity} kg</p>
-          <p>Min Bulk: ${product.minQty} kg</p>
+          <h3>${getEmoji(product.name)} ${product.name}</h3>
+          <p><strong>₹${product.price}/kg</strong></p>
+          <p>📦 Available: ${product.quantity} kg</p>
+          <p>📏 Min Order: ${product.minQty} kg</p>
         `;
         productList.appendChild(div);
       });
+    }
+
+    function getEmoji(name) {
+      const emojis = {
+        'apple': '🍎', 'banana': '🍌', 'orange': '🍊', 'mango': '🥭',
+        'tomato': '🍅', 'carrot': '🥕', 'potato': '🥔', 'onion': '🧅',
+        'flower': '🌸', 'rose': '🌹'
+      };
+      name = name.toLowerCase();
+      for (let key in emojis) {
+        if (name.includes(key)) return emojis[key];
+      }
+      return '🥬';
     }
   </script>
 </body>
