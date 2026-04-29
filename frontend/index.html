@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FarmLink</title>
+  <style>
+    #dashboard {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 50px;
+    }
+    .card {
+      width: 150px;
+      height: 150px;
+      border: 2px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    .card:hover {
+      background-color: lightgreen;
+    }
+    .hidden {
+      display: none;
+    }
+    input {
+      margin: 10px 0;
+      padding: 8px;
+      width: 200px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px 5px;
+      cursor: pointer;
+    }
+    .login-section {
+      max-width: 300px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+    #welcome {
+      text-align: center;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Dashboard Blocks -->
+  <div id="dashboard">
+    <div class="card" onclick="showFarmerLogin()">
+      👨‍🌾 Farmer
+    </div>
+    <div class="card" onclick="showConsumerLogin()">
+      👤 Consumer
+    </div>
+  </div>
+
+  <!-- Farmer Login -->
+  <div id="farmerLogin" class="hidden login-section">
+    <button onclick="goBackFromLogin()">⬅ Back</button>
+    <h2>👨‍🌾 Farmer Login</h2>
+    <input id="farmerName" placeholder="Farmer Name"><br>
+    <input id="farmerPhone" placeholder="Phone Number"><br>
+    <button onclick="proceedFarmer()">Proceed</button>
+    <div id="farmerWelcome" class="hidden"></div>
+  </div>
+
+  <!-- Consumer Login -->
+  <div id="consumerLogin" class="hidden login-section">
+    <button onclick="goBackFromLogin()">⬅ Back</button>
+    <h2>👤 Consumer Login</h2>
+    <input id="consumerName" placeholder="Consumer Name"><br>
+    <input id="consumerPhone" placeholder="Phone Number"><br>
+    <input id="consumerLocation" placeholder="Location (or click detect)"><br>
+    <button onclick="detectLocation()">Detect Location</button>
+    <button onclick="proceedConsumer()">Proceed</button>
+    <div id="consumerWelcome" class="hidden"></div>
+  </div>
+
+  <!-- Farmer Dashboard -->
+  <div id="farmer" class="hidden">
+    <button onclick="goBack()">⬅ Back</button>
+    <h2>👨‍🌾 Add Product</h2>
+    <input id="name" placeholder="Product Name"><br>
+    <input id="price" placeholder="Price per kg"><br>
+    <input id="quantity" placeholder="Available Quantity"><br>
+    <input id="minQty" placeholder="Minimum Bulk Quantity"><br>
+    <button onclick="addProduct()">Add Product</button>
+  </div>
+
+  <!-- Consumer Dashboard -->
+  <div id="consumer" class="hidden">
+    <button onclick="goBack()">⬅ Back</button>
+    <h2>🛒 Products</h2>
+    <div id="productList"></div>
+  </div>
+
+  <script>
+    let currentUser = null;
+
+    function showFarmerLogin() {
+      document.getElementById("dashboard").classList.add("hidden");
+      document.getElementById("farmerLogin").classList.remove("hidden");
+    }
+
+    function showConsumerLogin() {
+      document.getElementById("dashboard").classList.add("hidden");
+      document.getElementById("consumerLogin").classList.remove("hidden");
+    }
+
+    function goBackFromLogin() {
+      document.getElementById("dashboard").classList.remove("hidden");
+      document.getElementById("farmerLogin").classList.add("hidden");
+      document.getElementById("consumerLogin").classList.add("hidden");
+    }
+
+    function proceedFarmer() {
+      const name = document.getElementById('farmerName').value;
+      const phone = document.getElementById('farmerPhone').value;
+      if (!name || !phone) {
+        alert('Please enter name and phone');
+        return;
+      }
+      localStorage.setItem('farmerProfile', JSON.stringify({name, phone}));
+      currentUser = {type: 'farmer', name, phone};
+      document.getElementById('farmerWelcome').innerHTML = `Welcome, ${name}!`;
+      document.getElementById('farmerWelcome').classList.remove('hidden');
+      setTimeout(() => {
+        document.getElementById("farmerLogin").classList.add("hidden");
+        document.getElementById("farmer").classList.remove("hidden");
+      }, 1000);
+    }
+
+    function detectLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const location = `${position.coords.latitude.toFixed(2)}, ${position.coords.longitude.toFixed(2)}`;
+          document.getElementById('consumerLocation').value = location;
+        }, () => {
+          alert('Location access denied or unavailable');
+        });
+      } else {
+        alert('Geolocation not supported');
+      }
+    }
+
+    function proceedConsumer() {
+      const name = document.getElementById('consumerName').value;
+      const phone = document.getElementById('consumerPhone').value;
+      const location = document.getElementById('consumerLocation').value;
+      if (!name || !phone || !location) {
+        alert('Please enter all fields');
+        return;
+      }
+      localStorage.setItem('consumerProfile', JSON.stringify({name, phone, location}));
+      currentUser = {type: 'consumer', name, phone, location};
+      document.getElementById('consumerWelcome').innerHTML = `Welcome, ${name}! Location: ${location}`;
+      document.getElementById('consumerWelcome').classList.remove('hidden');
+      setTimeout(() => {
+        document.getElementById("consumerLogin").classList.add("hidden");
+        document.getElementById("consumer").classList.remove("hidden");
+        displayProducts();
+      }, 1000);
+    }
+
+    function goBack() {
+      document.getElementById("dashboard").classList.remove("hidden");
+      document.getElementById("farmer").classList.add("hidden");
+      document.getElementById("consumer").classList.add("hidden");
+    }
+
+    function addProduct() {
+      const name = document.getElementById('name').value;
+      const price = parseFloat(document.getElementById('price').value);
+      const quantity = parseInt(document.getElementById('quantity').value);
+      const minQty = parseInt(document.getElementById('minQty').value);
+      
+      if (!name || isNaN(price) || isNaN(quantity) || isNaN(minQty)) {
+        alert('Please fill all fields with valid numbers for price, quantity, minQty');
+        return;
+      }
+      
+      let products = JSON.parse(localStorage.getItem('products')) || [];
+      products.push({name, price, quantity, minQty});
+      localStorage.setItem('products', JSON.stringify(products));
+      
+      document.getElementById('name').value = '';
+      document.getElementById('price').value = '';
+      document.getElementById('quantity').value = '';
+      document.getElementById('minQty').value = '';
+      
+      alert('Product added successfully!');
+    }
+
+    function displayProducts() {
+      let products = JSON.parse(localStorage.getItem('products')) || [];
+      const productList = document.getElementById('productList');
+      productList.innerHTML = '';
+      
+      if (products.length === 0) {
+        productList.innerHTML = '<p>No products available yet.</p>';
+        return;
+      }
+      
+      products.forEach(product => {
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.style.cssText = 'border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 5px;';
+        div.innerHTML = `
+          <h3>${product.name}</h3>
+          <p>Price: ₹${product.price}/kg</p>
+          <p>Available: ${product.quantity} kg</p>
+          <p>Min Bulk: ${product.minQty} kg</p>
+        `;
+        productList.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
