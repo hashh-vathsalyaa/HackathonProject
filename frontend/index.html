@@ -10,23 +10,24 @@
       min-height: 100vh;
       padding: 20px;
     }
-    #dashboard {
+    #dashboard, .category-dashboard {
       display: flex;
       justify-content: center;
-      gap: 40px;
-      margin: 50px auto;
-      max-width: 600px;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 30px auto;
+      max-width: 800px;
     }
     .card {
-      width: 180px;
-      height: 180px;
+      width: 160px;
+      height: 160px;
       border: 3px solid #2E7D32;
       background: linear-gradient(145deg, #fff, #E8F5E8);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 20px;
       font-weight: bold;
       cursor: pointer;
       border-radius: 20px;
@@ -35,24 +36,17 @@
       position: relative;
       overflow: hidden;
     }
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="30" r="8" fill="%234CAF50"/><circle cx="80" cy="40" r="6" fill="%238BC34A"/><path d="M10 80 Q50 60 90 80" stroke="%232E7D32" stroke-width="3" fill="none"/></svg>') no-repeat center/cover;
-      opacity: 0.1;
-    }
     .card:hover {
       transform: translateY(-10px) scale(1.05);
       box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-      background: linear-gradient(145deg, #F1F8E9, #DCEDC8);
     }
-    .card.farmer { border-color: #388E3C; }
-    .card.consumer { border-color: #689F38; }
+    .card.veg { border-color: #388E3C; }
+    .card.fruit { border-color: #FBC02D; }
+    .card.flower { border-color: #E91E63; }
     .hidden { display: none; }
-    .login-section {
-      max-width: 350px;
-      margin: 50px auto;
+    .login-section, .add-section {
+      max-width: 400px;
+      margin: 30px auto;
       padding: 30px;
       background: white;
       border-radius: 20px;
@@ -61,20 +55,13 @@
     input {
       width: 100%;
       padding: 12px;
-      margin: 15px 0;
+      margin: 10px 0;
       border: 2px solid #AED581;
       border-radius: 10px;
       font-size: 16px;
-      transition: border 0.3s;
     }
-    input:focus {
-      outline: none;
-      border-color: #4CAF50;
-      box-shadow: 0 0 10px rgba(76,175,80,0.3);
-    }
-    input:invalid {
-      border-color: #FF5722;
-    }
+    input:focus { outline: none; border-color: #4CAF50; box-shadow: 0 0 10px rgba(76,175,80,0.3); }
+    input:invalid { border-color: #FF5722; }
     button {
       width: 100%;
       padding: 12px;
@@ -86,104 +73,96 @@
       font-weight: bold;
       cursor: pointer;
       transition: all 0.3s;
-      margin: 10px 0;
+      margin: 5px 0;
     }
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
-    #welcome {
-      text-align: center;
-      color: #2E7D32;
-      font-size: 18px;
-      margin: 20px 0;
-      padding: 15px;
-      background: #E8F5E8;
-      border-radius: 10px;
-    }
-    .product {
-      background: white;
-      border: 2px solid #AED581;
-      border-radius: 15px;
-      padding: 20px;
-      margin: 15px 0;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      transition: transform 0.3s;
-    }
-    .product:hover {
-      transform: translateY(-5px);
-    }
+    button:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    button.back { width: auto; background: #757575; margin-right: auto; }
+    #welcome { text-align: center; color: #2E7D32; font-size: 18px; margin: 15px 0; padding: 15px; background: #E8F5E8; border-radius: 10px; }
+    .product { background: white; border: 2px solid #AED581; border-radius: 15px; padding: 20px; margin: 15px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    .product:hover { transform: translateY(-3px); }
+    .category-badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-left: 10px; }
+    .veg-badge { background: #E8F5E8; color: #2E7D32; }
+    .fruit-badge { background: #FFF3E0; color: #F57C00; }
+    .flower-badge { background: #FCE4EC; color: #C2185B; }
     h2, h3 { color: #2E7D32; }
     @media (max-width: 600px) {
-      #dashboard { flex-direction: column; align-items: center; gap: 20px; }
-      .card { width: 250px; height: 120px; }
+      .category-dashboard { flex-direction: column; align-items: center; }
+      .card { width: 250px; }
     }
   </style>
 </head>
 <body>
-  <!-- Dashboard Blocks -->
+  <!-- Main Dashboard -->
   <div id="dashboard">
     <div class="card farmer" onclick="showFarmerLogin()">
-      👨‍🌾 Farmer<br><small>Fresh Produce</small>
+      👨‍🌾 Farmer<br><small>🌾 Fresh Farm</small>
     </div>
     <div class="card consumer" onclick="showConsumerLogin()">
-      👤 Consumer<br><small>Buy Direct</small>
+      👤 Consumer<br><small>🛒 Buy Now</small>
     </div>
   </div>
 
   <!-- Farmer Login -->
   <div id="farmerLogin" class="hidden login-section">
-    <button onclick="goBackFromLogin()">⬅ Back</button>
+    <button class="back" onclick="goBackFromLogin()">⬅ Back</button>
     <h2>🌾 Farmer Login</h2>
     <input id="farmerName" placeholder="Farmer Name" required>
-    <input id="farmerPhone" type="tel" pattern="[0-9]{10}" placeholder="Mobile Number (10 digits)" title="10 digits only" maxlength="10" required>
-    <button onclick="proceedFarmer()">🌱 Proceed to Farm</button>
-    <div id="farmerWelcome" class="hidden"></div>
+    <input id="farmerPhone" type="tel" pattern="[0-9]{10}" placeholder="Mobile (10 digits)" maxlength="10" required>
+    <button onclick="proceedFarmer()">🌱 Enter Farm</button>
   </div>
 
   <!-- Consumer Login -->
   <div id="consumerLogin" class="hidden login-section">
-    <button onclick="goBackFromLogin()">⬅ Back</button>
+    <button class="back" onclick="goBackFromLogin()">⬅ Back</button>
     <h2>🛒 Consumer Login</h2>
     <input id="consumerName" placeholder="Your Name" required>
-    <input id="consumerPhone" type="tel" pattern="[0-9]{10}" placeholder="Mobile Number (10 digits)" title="10 digits only" maxlength="10" required>
-    <input id="consumerLocation" placeholder="Location (lat,long or city)" required>
-    <button type="button" onclick="detectLocation()">📍 Detect GPS</button>
-    <button onclick="proceedConsumer()">🚀 Proceed to Market</button>
-    <div id="consumerWelcome" class="hidden"></div>
+    <input id="consumerPhone" type="tel" pattern="[0-9]{10}" placeholder="Mobile (10 digits)" maxlength="10" required>
+    <input id="consumerLocation" placeholder="City or lat,long" required>
+    <button type="button" onclick="detectLocation()">📍 Auto Detect GPS</button>
+    <button onclick="proceedConsumer()">🚀 Enter Market</button>
   </div>
 
-  <!-- Farmer Dashboard -->
-  <div id="farmer" class="hidden login-section" style="max-width: 500px;">
-    <button onclick="goBack()">⬅ Back to Home</button>
-    <h2>🌱 Add Fresh Product</h2>
-    <div id="farmerWelcomeDash" style="margin-bottom: 20px;"></div>
-    <input id="name" placeholder="Product Name (e.g. Apples)" required>
+  <!-- Farmer Category Dashboard -->
+  <div id="farmerCategories" class="hidden">
+    <button class="back" onclick="goBack()" style="margin: 20px auto; display: block;">🏠 Home</button>
+    <h2 style="text-align: center;">👨‍🌾 Farmer Dashboard</h2>
+    <div id="farmerWelcomeDash"></div>
+    <div class="category-dashboard">
+      <div class="card veg" onclick="showAdd('veg')">
+        🥬<br>Vegetables
+      </div>
+      <div class="card fruit" onclick="showAdd('fruit')">
+        🍎<br>Fruits
+      </div>
+      <div class="card flower" onclick="showAdd('flower')">
+        🌸<br>Flowers
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Product Section -->
+  <div id="addSection" class="hidden add-section">
+    <button class="back" onclick="showFarmerCategories()">⬅ Categories</button>
+    <h2 id="addTitle"></h2>
+    <div id="addWelcome"></div>
+    <input id="name" placeholder="Product Name" required>
     <input id="price" type="number" step="0.01" placeholder="Price ₹/kg" required>
     <input id="quantity" type="number" placeholder="Available kg" required>
     <input id="minQty" type="number" placeholder="Min Bulk kg" required>
-    <button onclick="addProduct()">+ Add Product</button>
+    <button onclick="addProduct()">+ List Product</button>
   </div>
 
   <!-- Consumer Dashboard -->
-  <div id="consumer" class="hidden" style="max-width: 600px; margin: 20px auto;">
-    <button onclick="goBack()">⬅ Back to Home</button>
-    <h2>🛒 Fresh Products Market</h2>
-    <div id="consumerWelcomeDash" style="margin-bottom: 20px;"></div>
+  <div id="consumer" class="hidden" style="max-width: 700px; margin: 20px auto;">
+    <button class="back" onclick="goBack()" style="margin: 20px auto; display: block;">🏠 Home</button>
+    <h2>🛒 Fresh Market</h2>
+    <div id="consumerWelcomeDash"></div>
     <div id="productList"></div>
   </div>
 
   <script>
     let currentUser = null;
-
-    // Load user if already logged (optional persistence)
-    window.onload = function() {
-      const savedFarmer = localStorage.getItem('farmerProfile');
-      const savedConsumer = localStorage.getItem('consumerProfile');
-      if (savedFarmer) {
-        // Could auto-login, but for now manual
-      }
-    };
+    let currentCategory = '';
 
     function showFarmerLogin() {
       document.getElementById("dashboard").classList.add("hidden");
@@ -204,31 +183,21 @@
     function proceedFarmer() {
       const name = document.getElementById('farmerName').value.trim();
       const phone = document.getElementById('farmerPhone').value.trim();
-      if (!name || !/^\d{10}$/.test(phone)) {
-        alert('Name required. Phone must be exactly 10 digits.');
-        return;
-      }
+      if (!name || !/^\d{10}$/.test(phone)) return alert('Name & 10-digit phone required.');
       localStorage.setItem('farmerProfile', JSON.stringify({name, phone}));
       currentUser = {type: 'farmer', name, phone};
-      document.getElementById('farmerWelcome').innerHTML = `🌾 Welcome back, ${name}!`;
-      document.getElementById('farmerWelcome').classList.remove('hidden');
-      document.getElementById('farmerWelcomeDash').innerHTML = `👨‍🌾 ${name} - Verified Farmer`;
+      document.getElementById('farmerWelcomeDash').innerHTML = `👨‍🌾 ${name} | 📞 ${phone.slice(0,3)}***${phone.slice(-3)}`;
       setTimeout(() => {
         document.getElementById("farmerLogin").classList.add("hidden");
-        document.getElementById("farmer").classList.remove("hidden");
-      }, 1200);
+        document.getElementById("farmerCategories").classList.remove("hidden");
+      }, 500);
     }
 
     function detectLocation() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          const loc = `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
-          document.getElementById('consumerLocation').value = loc;
-        }, (err) => {
-          alert('GPS failed: Use manual location (city or lat,long)');
-        });
-      } else {
-        alert('GPS not supported');
+        navigator.geolocation.getCurrentPosition(pos => {
+          document.getElementById('consumerLocation').value = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+        }, () => alert('GPS denied. Enter city manually.'));
       }
     }
 
@@ -236,26 +205,37 @@
       const name = document.getElementById('consumerName').value.trim();
       const phone = document.getElementById('consumerPhone').value.trim();
       const location = document.getElementById('consumerLocation').value.trim();
-      if (!name || !/^\d{10}$/.test(phone) || !location) {
-        alert('All fields required. Phone must be 10 digits.');
-        return;
-      }
+      if (!name || !/^\d{10}$/.test(phone) || !location) return alert('All fields & 10-digit phone required.');
       localStorage.setItem('consumerProfile', JSON.stringify({name, phone, location}));
       currentUser = {type: 'consumer', name, phone, location};
-      document.getElementById('consumerWelcome').innerHTML = `🛒 Hi ${name}! 📍 ${location}`;
-      document.getElementById('consumerWelcome').classList.remove('hidden');
-      document.getElementById('consumerWelcomeDash').innerHTML = `👤 ${name} @ ${location}`;
+      document.getElementById('consumerWelcomeDash').innerHTML = `👤 ${name} 📍 ${location}`;
       setTimeout(() => {
         document.getElementById("consumerLogin").classList.add("hidden");
         document.getElementById("consumer").classList.remove("hidden");
-        displayProducts();
-      }, 1200);
+        displayAllProducts();
+      }, 500);
+    }
+
+    function showFarmerCategories() {
+      document.getElementById("addSection").classList.add("hidden");
+      document.getElementById("farmerCategories").classList.remove("hidden");
+    }
+
+    function showAdd(cat) {
+      currentCategory = cat;
+      const titles = {veg: '🥬 Vegetables', fruit: '🍎 Fruits', flower: '🌸 Flowers'};
+      const emojis = {veg: '🥬', fruit: '🍎', flower: '🌸'};
+      document.getElementById("addTitle").innerHTML = `${emojis[cat]} Add ${titles[cat][0].slice(2)}`;
+      document.getElementById("addWelcome").innerHTML = `📋 List your fresh ${cat} for consumers`;
+      document.getElementById("farmerCategories").classList.add("hidden");
+      document.getElementById("addSection").classList.remove("hidden");
     }
 
     function goBack() {
-      document.getElementById("dashboard").classList.remove("hidden");
-      document.getElementById("farmer").classList.add("hidden");
+      document.getElementById("farmerCategories").classList.add("hidden");
       document.getElementById("consumer").classList.add("hidden");
+      document.getElementById("addSection").classList.add("hidden");
+      document.getElementById("dashboard").classList.remove("hidden");
     }
 
     function addProduct() {
@@ -264,57 +244,60 @@
       const quantity = parseInt(document.getElementById('quantity').value);
       const minQty = parseInt(document.getElementById('minQty').value);
       
-      if (!name || isNaN(price) || isNaN(quantity) || isNaN(minQty) || quantity <= 0 || minQty <= 0 || minQty > quantity) {
-        alert('Valid product details required. MinQty <= Quantity.');
-        return;
+      if (!name || isNaN(price) || isNaN(quantity) || isNaN(minQty) || minQty > quantity) {
+        return alert('Valid details: MinQty ≤ Quantity');
       }
       
-      let products = JSON.parse(localStorage.getItem('products')) || [];
+      let products = JSON.parse(localStorage.getItem(currentCategory)) || [];
       products.push({name, price, quantity, minQty});
-      localStorage.setItem('products', JSON.stringify(products));
+      localStorage.setItem(currentCategory, JSON.stringify(products));
       
+      // Clear form
       document.getElementById('name').value = '';
       document.getElementById('price').value = '';
       document.getElementById('quantity').value = '';
       document.getElementById('minQty').value = '';
       
-      alert(`✅ ${name} added to market!`);
+      alert(`✅ ${name} listed in ${currentCategory}!`);
+      showFarmerCategories();
     }
 
-    function displayProducts() {
-      let products = JSON.parse(localStorage.getItem('products')) || [];
+    function displayAllProducts() {
+      const cats = ['veg', 'fruit', 'flower'];
       const productList = document.getElementById('productList');
       productList.innerHTML = '';
       
-      if (products.length === 0) {
-        productList.innerHTML = '<div class="product" style="text-align:center;color:#666;"><p>🥬 No fresh produce yet.<br>Farmers, add some!</p></div>';
-        return;
-      }
-      
-      products.forEach((product, index) => {
-        const div = document.createElement('div');
-        div.className = 'product';
-        div.innerHTML = `
-          <h3>${getEmoji(product.name)} ${product.name}</h3>
-          <p><strong>₹${product.price}/kg</strong></p>
-          <p>📦 Available: ${product.quantity} kg</p>
-          <p>📏 Min Order: ${product.minQty} kg</p>
-        `;
-        productList.appendChild(div);
+      cats.forEach(cat => {
+        let products = JSON.parse(localStorage.getItem(cat)) || [];
+        products.forEach(product => {
+          const div = document.createElement('div');
+          div.className = 'product';
+          const badgeClass = cat === 'veg' ? 'veg-badge' : cat === 'fruit' ? 'fruit-badge' : 'flower-badge';
+          div.innerHTML = `
+            <h3>${getEmoji(product.name, cat)} ${product.name} <span class="category-badge ${badgeClass}">${cat.toUpperCase()}</span></h3>
+            <p><strong>₹${product.price}/kg</strong></p>
+            <p>📦 Stock: ${product.quantity} kg | Min: ${product.minQty} kg</p>
+          `;
+          productList.appendChild(div);
+        });
       });
+      
+      if (productList.children.length === 0) {
+        productList.innerHTML = '<div class="product" style="text-align:center;"><p>🥬 No products yet. Farmers add some!</p></div>';
+      }
     }
 
-    function getEmoji(name) {
+    function getEmoji(name, cat) {
       const emojis = {
-        'apple': '🍎', 'banana': '🍌', 'orange': '🍊', 'mango': '🥭',
-        'tomato': '🍅', 'carrot': '🥕', 'potato': '🥔', 'onion': '🧅',
-        'flower': '🌸', 'rose': '🌹'
+        veg: {tomato: '🍅', carrot: '🥕', potato: '🥔', onion: '🧅', cabbage: '🥬'},
+        fruit: {apple: '🍎', banana: '🍌', mango: '🥭', orange: '🍊'},
+        flower: {rose: '🌹', lily: '🌺', sunflower: '🌻'}
       };
       name = name.toLowerCase();
-      for (let key in emojis) {
-        if (name.includes(key)) return emojis[key];
+      for (let key in emojis[cat]) {
+        if (name.includes(key)) return emojis[cat][key];
       }
-      return '🥬';
+      return cat === 'veg' ? '🥬' : cat === 'fruit' ? '🍎' : '🌸';
     }
   </script>
 </body>
