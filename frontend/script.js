@@ -13,8 +13,81 @@ let activePledgeData = null;
 let driverTrackingLoops = {};
 let consumerTrackLoop = null;
 
-const EMOJIS = { veg: { default:'🥦' }, fruit: { default:'🍈' }, flower: { default:'💐' } };
-function getEmoji(name, cat) { return EMOJIS[cat].default; } 
+const EMOJIS = {
+  veg: {
+    default: '🥦',
+    tomato: '🍅', tomatoes: '🍅',
+    potato: '🥔', potatoes: '🥔',
+    onion: '🧅', onions: '🧅',
+    garlic: '🧄',
+    carrot: '🥕', carrots: '🥕',
+    corn: '🌽', maize: '🌽',
+    broccoli: '🥦',
+    lettuce: '🥬', cabbage: '🥬', spinach: '🥬', kale: '🥬', leafy: '🥬',
+    cucumber: '🥒', cucumbers: '🥒',
+    eggplant: '🍆', brinjal: '🍆', aubergine: '🍆',
+    pepper: '🫑', capsicum: '🫑', chilli: '🌶️', chili: '🌶️', green_chilli: '🌶️',
+    pea: '🫛', peas: '🫛',
+    bean: '🫘', beans: '🫘',
+    mushroom: '🍄', mushrooms: '🍄',
+    radish: '🌱', turnip: '🌱',
+    beetroot: '🫚', beet: '🫚',
+    pumpkin: '🎃', gourd: '🎃', bottle_gourd: '🎃',
+    sweet_potato: '🍠', yam: '🍠',
+  },
+  fruit: {
+    default: '🍑',
+    mango: '🥭', mangoes: '🥭',
+    apple: '🍎', apples: '🍎',
+    banana: '🍌', bananas: '🍌',
+    orange: '🍊', oranges: '🍊',
+    grape: '🍇', grapes: '🍇',
+    watermelon: '🍉',
+    strawberry: '🍓', strawberries: '🍓',
+    pineapple: '🍍',
+    lemon: '🍋', lime: '🍋',
+    coconut: '🥥',
+    papaya: '🫐',
+    guava: '🍈',
+    pomegranate: '💎',
+    kiwi: '🥝',
+    pear: '🍐', pears: '🍐',
+    cherry: '🍒', cherries: '🍒',
+    peach: '🍑', peaches: '🍑',
+    blueberry: '🫐', blueberries: '🫐',
+    fig: '🍈', dates: '🌴',
+    plum: '🍑', plums: '🍑',
+    jackfruit: '🍈',
+  },
+  flower: {
+    default: '🌸',
+    rose: '🌹', roses: '🌹',
+    sunflower: '🌻', sunflowers: '🌻',
+    marigold: '🌼', marigolds: '🌼',
+    tulip: '🌷', tulips: '🌷',
+    lily: '🌸', lilies: '🌸',
+    lotus: '🪷',
+    jasmine: '🤍',
+    daisy: '🌼', daisies: '🌼',
+    lavender: '💜',
+    orchid: '🌺', orchids: '🌺',
+    hibiscus: '🌺',
+    chrysanthemum: '🌸',
+    poppy: '🌺',
+  }
+};
+
+function getEmoji(name, cat) {
+  if (!name || !EMOJIS[cat]) return EMOJIS[cat]?.default || '🌿';
+  const key = name.trim().toLowerCase().replace(/\s+/g, '_');
+  // Try exact match first, then partial word match
+  if (EMOJIS[cat][key]) return EMOJIS[cat][key];
+  const words = name.toLowerCase().split(/\s+/);
+  for (const word of words) {
+    if (EMOJIS[cat][word]) return EMOJIS[cat][word];
+  }
+  return EMOJIS[cat].default;
+}
 
 function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2800); }
 function hideAll() { ['heroSection','farmerLogin','consumerLogin','driverLogin','farmerDash','addSection','consumerDash','driverDash'].forEach(id => document.getElementById(id).classList.add('hidden')); }
