@@ -11,12 +11,6 @@ Farm2Home is a **multi-role web platform** that enables seamless interaction bet
 
 ---
 
-## 📸 Preview
-
-![Farm2Home UI](https://via.placeholder.com/1200x600?text=Farm2Home+Preview)
-
----
-
 ## ✨ Features
 
 ### 👨‍🌾 Farmer Dashboard
